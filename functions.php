@@ -6,6 +6,22 @@ function my_child_theme_scripts() {
 	wp_enqueue_style( 'parent-theme-css', get_template_directory_uri() . '/style.css' );
 }
 
+// Fallback in case Post Styles not activated
+if( ! class_exists('McNinja_Post_Styles') ) {
+	function get_post_style() {
+		return get_post_format();
+	}
+	function get_post_style_link( $link ) {
+		return get_post_format_link( $link );
+	}
+	function get_post_style_string( $slug ) {
+		return get_post_format_string( $slug );
+	}
+} else {
+	add_action( 'init', function() { remove_theme_support( 'post-formats' ); } );
+}
+
+
 add_filter( 'post_style_strings', 'add_oembed_post_style' );
 function add_oembed_post_style( $strings ) {
 
